@@ -1,7 +1,7 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import { Colors } from "@/constants/Colors";
-import { useRouter } from "expo-router";
+import { Href, useRouter } from "expo-router";
 
 export default function Login() {
   const router=useRouter();
@@ -29,8 +29,8 @@ export default function Login() {
         </Text>
 
         <TouchableOpacity style={styles.button}
-      // onPress={() => router.push('/auth/sign-in')} // Ensure the path is a string
-      onPress={()=>router.push("/")}
+      onPress={() => router.push('/auth/sign-in' as Href)} // Ensure the path is a string
+      // onPress={()=>router.push("/")}
       >
           <Text style={styles.buttonText}>
             Get Started
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     // padding: 10,
   },
   button: {
-    padding: 15,
+    padding: 14,
     width: "100%",
     backgroundColor: Colors.PRIMARY,
     borderRadius: 99,
@@ -78,6 +78,6 @@ const styles = StyleSheet.create({
     color: Colors.WHITE,
     textAlign: "center",
     fontFamily: "outfit",
-    fontSize: 17,
+    fontSize: 18,
   },
 });
