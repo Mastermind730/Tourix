@@ -8,7 +8,7 @@ import {
 import React, { useEffect } from "react";
 import { useNavigation, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
-
+import Ionicons from '@expo/vector-icons/Ionicons';
 export default function Index() {
   const navigation = useNavigation();
   const router = useRouter();
@@ -20,6 +20,9 @@ export default function Index() {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity onPress={()=>router.back()}>
+      <Ionicons name="arrow-back-sharp" size={24} color="black" />
+      </TouchableOpacity>
       <Text style={styles.title}>Let&apos;s Sign You In</Text>
       <Text style={styles.subtitle}>Welcome Back</Text>
       <Text style={styles.subtitle}>You&apos;ve been missed</Text>
@@ -87,15 +90,15 @@ export default function Index() {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 60,
     padding: 25,
-    paddingTop: 80,
+    paddingTop: 40,
     backgroundColor: Colors.WHITE,
     height: "100%",
   },
   title: {
     fontFamily: "outfit-Bold", // Ensure the correct font family
     fontSize: 30,
+    marginTop:30
     // color: Colors.BLACK,
   },
   subtitle: {
