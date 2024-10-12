@@ -1,4 +1,4 @@
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ToastAndroid } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
@@ -20,19 +20,25 @@ export default function Index() {
     });
   }, []);
 
+ 
   const signUp = (): void => {
+
+    if(!(email?.length>0 && password?.length>0 && fullName?.length>0)){
+      ToastAndroid.show("Please enter all details!!",ToastAndroid.LONG);
+      return;
+    }
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential: UserCredential) => {
-        // Signed up
-        const user = userCredential.user;
-        console.log('User signed up:', user);
-        // Do something with the user object
-      })
-      .catch((error: any) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.error(`Error [${errorCode}]: ${errorMessage}`);
-      });
+    .then((userCredential: UserCredential) => {
+      // Signed up
+      const user = userCredential.user;
+      console.log('User signed up:', user);
+      // Do something with the user object
+    })
+    .catch((error: any) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.error(`Error [${errorCode}]: ${errorMessage}`);
+    });
   };
 
 
@@ -62,13 +68,14 @@ export default function Index() {
         <TextInput
           placeholder="Enter Full Name"
           // placeholderTextColor={Colors.GRAY}
-
+          onChangeText={(value)=>setFullName(value)}
           style={styles.input}
         />
         <Text style={styles.label}>Email</Text>
         <TextInput
           placeholder="Enter Email"
           // placeholderTextColor={Colors.GRAY}
+          onChangeText={(value)=>setEmail(value)}
 
           style={styles.input}
         />
@@ -77,12 +84,15 @@ export default function Index() {
           placeholder="Enter Password"
           secureTextEntry={true}
           // placeholderTextColor={Colors.GRAY}
+          onChangeText={(value)=>setPassword(value)}
+
           style={styles.input}
         />
       </View>
 
 
-      <View
+      <TouchableOpacity
+      onPress={signUp}
         style={{
           padding: 20,
           marginTop: 50,
@@ -100,7 +110,7 @@ export default function Index() {
         >
           Create Account
         </Text>
-      </View>
+      </TouchableOpacity>
       <TouchableOpacity
         onPress={() => router.replace("/auth/sign-in")}
         style={{

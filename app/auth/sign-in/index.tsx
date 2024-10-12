@@ -4,24 +4,53 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
+  ToastAndroid,
 } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigation, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
-import Ionicons from '@expo/vector-icons/Ionicons';
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { auth } from "@/config/FirebaseConfig";
+
+
 export default function Index() {
   const navigation = useNavigation();
   const router = useRouter();
+  const [email,setEmail]=useState<string>("");
+  const [password,setPassword]=useState<string>("");
   useEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
   }, [navigation]);
 
+  const signIn=():void=>{
+
+    if(!(email?.length>0 && password?.length>0 )){
+      ToastAndroid.show("Please enter all details!!",ToastAndroid.LONG);
+      return;
+    }
+    signInWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+    console.log(user)
+    // ...
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    console.log(errorMessage,errorCode)
+  });
+
+  }
+
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={()=>router.back()}>
-      <Ionicons name="arrow-back-sharp" size={24} color="black" />
+      <TouchableOpacity onPress={() => router.back()}>
+        <Ionicons name="arrow-back-sharp" size={24} color="black" />
       </TouchableOpacity>
       <Text style={styles.title}>Let&apos;s Sign You In</Text>
       <Text style={styles.subtitle}>Welcome Back</Text>
@@ -32,7 +61,7 @@ export default function Index() {
         <TextInput
           placeholder="Enter Email"
           // placeholderTextColor={Colors.GRAY}
-
+          onChangeText={(value)=>setEmail(value)}
           style={styles.input}
         />
         <Text style={styles.label}>Password</Text>
@@ -40,11 +69,14 @@ export default function Index() {
           placeholder="Enter Password"
           secureTextEntry={true}
           // placeholderTextColor={Colors.GRAY}
+          onChangeText={(value)=>setPassword(value)}
+
           style={styles.input}
         />
       </View>
 
-      <View
+      <TouchableOpacity
+      onPress={signIn}
         style={{
           padding: 20,
           marginTop: 50,
@@ -62,7 +94,7 @@ export default function Index() {
         >
           Sign In
         </Text>
-      </View>
+      </TouchableOpacity>
       <TouchableOpacity
         onPress={() => router.replace("/auth/sign-up")}
         style={{
@@ -98,7 +130,7 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: "outfit-Bold", // Ensure the correct font family
     fontSize: 30,
-    marginTop:30
+    marginTop: 30,
     // color: Colors.BLACK,
   },
   subtitle: {
