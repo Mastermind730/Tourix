@@ -1,17 +1,39 @@
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
+import { getAuth } from "firebase/auth";
+import { auth } from "@/config/FirebaseConfig";
+import { Auth, createUserWithEmailAndPassword, UserCredential } from "firebase/auth";
 
 export default function Index() {
   const navigation = useNavigation();
   const router=useRouter();
+
+  const [email,setEmail]=useState<string>("");
+  const [password,setPassword]=useState<string>("");
+  const [fullName,setFullName]=useState<string>("");
   useEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
   }, []);
+
+  const signUp = (): void => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential: UserCredential) => {
+        // Signed up
+        const user = userCredential.user;
+        console.log('User signed up:', user);
+        // Do something with the user object
+      })
+      .catch((error: any) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error(`Error [${errorCode}]: ${errorMessage}`);
+      });
+  };
 
 
   return (
