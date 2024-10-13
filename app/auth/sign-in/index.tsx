@@ -36,12 +36,18 @@ export default function Index() {
     // Signed in 
     const user = userCredential.user;
     console.log(user)
+    router.replace("/myTrip")
     // ...
   })
   .catch((error) => {
     const errorCode = error.code;
     const errorMessage = error.message;
     console.log(errorMessage,errorCode)
+
+    if(errorCode=='auth/invalid-credential'){
+      ToastAndroid.show("Invalid Credentials!!",ToastAndroid.LONG);
+      return;
+    }
   });
 
   }

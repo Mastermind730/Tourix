@@ -32,6 +32,7 @@ export default function Index() {
       // Signed up
       const user = userCredential.user;
       console.log('User signed up:', user);
+      router.replace("/myTrip")
       // Do something with the user object
     })
     .catch((error: any) => {
