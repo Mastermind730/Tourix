@@ -1,65 +1,73 @@
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, ToastAndroid } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Pressable,
+  ToastAndroid,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { getAuth } from "firebase/auth";
 import { auth } from "@/config/FirebaseConfig";
-import { Auth, createUserWithEmailAndPassword, UserCredential } from "firebase/auth";
+import {
+  Auth,
+  createUserWithEmailAndPassword,
+  UserCredential,
+} from "firebase/auth";
 
 export default function Index() {
   const navigation = useNavigation();
-  const router=useRouter();
+  const router = useRouter();
 
-  const [email,setEmail]=useState<string>("");
-  const [password,setPassword]=useState<string>("");
-  const [fullName,setFullName]=useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [fullName, setFullName] = useState<string>("");
   useEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
   }, []);
 
- 
   const signUp = (): void => {
-
-    if(!(email?.length>0 && password?.length>0 && fullName?.length>0)){
-      ToastAndroid.show("Please enter all details!!",ToastAndroid.LONG);
+    if (!(email?.length > 0 && password?.length > 0 && fullName?.length > 0)) {
+      ToastAndroid.show("Please enter all details!!", ToastAndroid.LONG);
       return;
     }
     createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential: UserCredential) => {
-      // Signed up
-      const user = userCredential.user;
-      console.log('User signed up:', user);
-      router.replace("/myTrip")
-      // Do something with the user object
-    })
-    .catch((error: any) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.error(`Error [${errorCode}]: ${errorMessage}`);
-    });
+      .then((userCredential: UserCredential) => {
+        // Signed up
+        const user = userCredential.user;
+        console.log("User signed up:", user);
+        router.replace("/myTrip");
+        // Do something with the user object
+      })
+      .catch((error: any) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error(`Error [${errorCode}]: ${errorMessage}`);
+      });
   };
-
 
   return (
     <View
       style={{
-        padding:25,
-        paddingTop:50,
-        backgroundColor:Colors.WHITE,
-        height:"100%"
+        padding: 25,
+        paddingTop: 50,
+        backgroundColor: Colors.WHITE,
+        height: "100%",
       }}
     >
-       <TouchableOpacity onPress={()=>router.back()}>
-      <Ionicons name="arrow-back-sharp" size={24} color="black" />
-      </TouchableOpacity>
+      <Pressable onPress={() => router.back()}>
+        <Ionicons name="arrow-back-sharp" size={24} color="black" />
+      </Pressable>
       <Text
         style={{
-          fontFamily:"outfit-bold",
+          fontFamily: "outfit-bold",
           fontSize: 30,
-          marginTop:30
+          marginTop: 30,
         }}
       >
         Create New Account
@@ -69,15 +77,14 @@ export default function Index() {
         <TextInput
           placeholder="Enter Full Name"
           // placeholderTextColor={Colors.GRAY}
-          onChangeText={(value)=>setFullName(value)}
+          onChangeText={(value) => setFullName(value)}
           style={styles.input}
         />
         <Text style={styles.label}>Email</Text>
         <TextInput
           placeholder="Enter Email"
           // placeholderTextColor={Colors.GRAY}
-          onChangeText={(value)=>setEmail(value)}
-
+          onChangeText={(value) => setEmail(value)}
           style={styles.input}
         />
         <Text style={styles.label}>Password</Text>
@@ -85,15 +92,13 @@ export default function Index() {
           placeholder="Enter Password"
           secureTextEntry={true}
           // placeholderTextColor={Colors.GRAY}
-          onChangeText={(value)=>setPassword(value)}
-
+          onChangeText={(value) => setPassword(value)}
           style={styles.input}
         />
       </View>
 
-
-      <TouchableOpacity
-      onPress={signUp}
+      <Pressable
+        onPress={signUp}
         style={{
           padding: 20,
           marginTop: 50,
@@ -111,8 +116,8 @@ export default function Index() {
         >
           Create Account
         </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
+      </Pressable>
+      <Pressable
         onPress={() => router.replace("/auth/sign-in")}
         style={{
           padding: 20,
@@ -132,12 +137,10 @@ export default function Index() {
         >
           Sign In
         </Text>
-      </TouchableOpacity>
-
+      </Pressable>
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {

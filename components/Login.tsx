@@ -1,10 +1,10 @@
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, Image, StyleSheet, Pressable } from "react-native";
 import React from "react";
 import { Colors } from "@/constants/Colors";
 import { Href, useRouter } from "expo-router";
 
 export default function Login() {
-  const router=useRouter();
+  const router = useRouter();
 
   return (
     <View>
@@ -16,11 +16,8 @@ export default function Login() {
         }}
       />
       <View style={styles.container}>
-        <Text style={styles.title}>
-          AI Travel Planner
-        </Text>
+        <Text style={styles.title}>AI Travel Planner</Text>
 
-        
         <Text style={styles.description}>
           Plan your perfect getaway with our AI-powered travel planner, offering
           personalized itineraries and destination recommendations. Simplify
@@ -28,14 +25,13 @@ export default function Login() {
           tailored to your preferences.
         </Text>
 
-        <TouchableOpacity style={styles.button}
-      onPress={() => router.push('/auth/sign-in' as Href)} // Ensure the path is a string
-      // onPress={()=>router.push("/")}
-      >
-          <Text style={styles.buttonText}>
-            Get Started
-          </Text>
-        </TouchableOpacity>
+        <Pressable
+          style={styles.button}
+          onPress={() => router.push("/auth/sign-in" as Href)} // Ensure the path is a string
+          // onPress={()=>router.push("/")}
+        >
+          <Text style={styles.buttonText}>Get Started</Text>
+        </Pressable>
       </View>
     </View>
   );
@@ -69,9 +65,9 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: Colors.PRIMARY,
     borderRadius: 99,
-    marginTop: '20%',
-    alignSelf: 'center', // Centering the button horizontally
-    alignItems: 'center',
+    marginTop: "20%",
+    alignSelf: "center", // Centering the button horizontally
+    alignItems: "center",
     justifyContent: "center",
   },
   buttonText: {

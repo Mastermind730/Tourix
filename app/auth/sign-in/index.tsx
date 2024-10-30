@@ -3,7 +3,7 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  TouchableOpacity,
+  Pressable,
   ToastAndroid,
 } from "react-native";
 import React, { useEffect, useState } from "react";
@@ -13,51 +13,47 @@ import { Colors } from "@/constants/Colors";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { auth } from "@/config/FirebaseConfig";
 
-
 export default function Index() {
   const navigation = useNavigation();
   const router = useRouter();
-  const [email,setEmail]=useState<string>("");
-  const [password,setPassword]=useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   useEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
   }, [navigation]);
 
-  const signIn=():void=>{
-
-    if(!(email?.length>0 && password?.length>0 )){
-      ToastAndroid.show("Please enter all details!!",ToastAndroid.LONG);
+  const signIn = (): void => {
+    if (!(email?.length > 0 && password?.length > 0)) {
+      ToastAndroid.show("Please enter all details!!", ToastAndroid.LONG);
       return;
     }
     signInWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
-    // Signed in 
-    const user = userCredential.user;
-    console.log(user)
-    router.replace("/myTrip")
-    // ...
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.log(errorMessage,errorCode)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user);
+        router.replace("/myTrip");
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorMessage, errorCode);
 
-    if(errorCode=='auth/invalid-credential'){
-      ToastAndroid.show("Invalid Credentials!!",ToastAndroid.LONG);
-      return;
-    }
-  });
-
-  }
-
+        if (errorCode == "auth/invalid-credential") {
+          ToastAndroid.show("Invalid Credentials!!", ToastAndroid.LONG);
+          return;
+        }
+      });
+  };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => router.back()}>
+      <Pressable onPress={() => router.back()}>
         <Ionicons name="arrow-back-sharp" size={24} color="black" />
-      </TouchableOpacity>
+      </Pressable>
       <Text style={styles.title}>Let&apos;s Sign You In</Text>
       <Text style={styles.subtitle}>Welcome Back</Text>
       <Text style={styles.subtitle}>You&apos;ve been missed</Text>
@@ -67,7 +63,7 @@ export default function Index() {
         <TextInput
           placeholder="Enter Email"
           // placeholderTextColor={Colors.GRAY}
-          onChangeText={(value)=>setEmail(value)}
+          onChangeText={(value) => setEmail(value)}
           style={styles.input}
         />
         <Text style={styles.label}>Password</Text>
@@ -75,14 +71,13 @@ export default function Index() {
           placeholder="Enter Password"
           secureTextEntry={true}
           // placeholderTextColor={Colors.GRAY}
-          onChangeText={(value)=>setPassword(value)}
-
+          onChangeText={(value) => setPassword(value)}
           style={styles.input}
         />
       </View>
 
-      <TouchableOpacity
-      onPress={signIn}
+      <Pressable
+        onPress={signIn}
         style={{
           padding: 20,
           marginTop: 50,
@@ -100,8 +95,8 @@ export default function Index() {
         >
           Sign In
         </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
+      </Pressable>
+      <Pressable
         onPress={() => router.replace("/auth/sign-up")}
         style={{
           padding: 20,
@@ -121,7 +116,7 @@ export default function Index() {
         >
           Create Account
         </Text>
-      </TouchableOpacity>
+      </Pressable>
     </View>
   );
 }
