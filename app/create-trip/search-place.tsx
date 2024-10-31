@@ -1,7 +1,10 @@
 import { View, Text, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { useNavigation, useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
+// import {TOMTOM_API_KEY} from 'react-native-dotenv';
+// import { TOMTOM_API_KEY } from '@env';
 
 type Props = {};
 
@@ -9,10 +12,11 @@ const SearchPlace = (props: Props) => {
   const navigation = useNavigation();
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  const router=useRouter();
-  // Dummy data to simulate suggestions
-  const dummyData = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'Philadelphia'];
+  const router = useRouter();
+  const TOMTOM_API_KEY = process.env.TOMTOM_API_KEY
+  // const TOMTOM_API_KEY = '3VgEugYT6LBgBKn9WvyprAxlYlqaZeGA';
 
+  console.log("key is:",TOMTOM_API_KEY)
   useEffect(() => {
     navigation.setOptions({
       headerShown: true,
@@ -21,11 +25,29 @@ const SearchPlace = (props: Props) => {
     });
   }, [navigation]);
 
-  const handleSearch = (text: string) => {
+  const handleSearch = async (text: string) => {
     setQuery(text);
-    // Filter the dummy data to simulate suggestions
     if (text.length > 0) {
-      setSuggestions(dummyData.filter((item) => item.toLowerCase().includes(text.toLowerCase())));
+      try {
+        // Call TomTom API to get suggestions
+        const response = await axios.get(
+          `https://api.tomtom.com/search/2/search/${text}.json`,
+          {
+            params: {
+              key: TOMTOM_API_KEY,
+              language: 'en-US',
+              typeahead: true,
+              limit: 5,
+            },
+          }
+        );
+        console.log(response)
+        // Map the response to get suggestion labels
+        const places = response.data.results.map((result: any) => result.address.freeformAddress);
+        setSuggestions(places);
+      } catch (error) {
+        console.error("Error fetching suggestions:", error);
+      }
     } else {
       setSuggestions([]);
     }
@@ -61,7 +83,7 @@ const SearchPlace = (props: Props) => {
               console.log(item);
               setQuery(item);
               setSuggestions([]);
-              router.push("/create-trip/select-traveller")
+              router.push("/create-trip/select-traveller");
             }}
             style={{
               padding: 10,
