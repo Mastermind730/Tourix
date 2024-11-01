@@ -1,13 +1,16 @@
-import { View, Text } from 'react-native'
-import React, { useEffect } from 'react'
+import { View, Text,FlatList, Pressable } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigation } from 'expo-router'
 import { Colors } from '@/constants/Colors'
-import { FlatList } from 'react-native-gesture-handler'
 import { SelectTravellersList } from '@/constants/Options'
+import { CreateTripContext } from '@/context/CreateTripContext'
 
 type Props = {}
 
 const SelectTraveller = (props: Props) => {
+    const [selectedTraveller,setSelectedTraveller]=useState();
+    const { tripData, setTripData } = useContext(CreateTripContext);
+
     const navigation=useNavigation();
     useEffect(()=>{
         navigation.setOptions({
@@ -16,6 +19,13 @@ const SelectTraveller = (props: Props) => {
             headerTitle: ''
         })
     })
+    useEffect(()=>{
+
+      console.log(selectedTraveller);
+      setTripData({...tripData,
+        travellerCount:SelectTraveller
+     } )
+    },[selectedTraveller])
   return (
     <View style={{
         padding:25,
@@ -31,7 +41,7 @@ const SelectTraveller = (props: Props) => {
         }
       }>Who's Travelling</Text>
       <View style={{
-        marginTop:20
+        marginTop:15
       }}>
         <Text style={{
             fontFamily:"outfit-bold",
@@ -44,18 +54,23 @@ const SelectTraveller = (props: Props) => {
             data={SelectTravellersList}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
-                <View style={{
+                <Pressable 
+                onPress={()=>{setSelectedTraveller(item);
+                  // console.log(selectedTraveller)
+
+                }}
+                style={{
                     padding: 15,
                     marginVertical: 8,
-                    backgroundColor: '#f9f9f9',
+                    backgroundColor: selectedTraveller?.id === item.id ? '#cce5ff' : '#f9f9f9', // Change background color if selected
                     borderRadius: 8,
                     borderWidth: 1,
-                    borderColor: '#e0e0e0'
-                }}>
+                    borderColor: selectedTraveller?.id === item.id ? '#007bff' : '#e0e0e0', // Change border color if selected
+                  }}>
                     <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{item.icon} {item.title}</Text>
                     <Text style={{ color: '#555' }}>{item.desc}</Text>
                     <Text style={{ color: '#888' }}>People: {item.people}</Text>
-                </View>
+                </Pressable>
             )}
         />
       </View>

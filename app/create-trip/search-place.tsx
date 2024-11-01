@@ -1,22 +1,20 @@
 import { View, Text, TextInput, FlatList, TouchableOpacity } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigation, useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
-// import {TOMTOM_API_KEY} from 'react-native-dotenv';
-// import { TOMTOM_API_KEY } from '@env';
+import { CreateTripContext } from '@/context/CreateTripContext';
 
 type Props = {};
 
 const SearchPlace = (props: Props) => {
   const navigation = useNavigation();
+  const { tripData, setTripData } = useContext(CreateTripContext);
   const [query, setQuery] = useState('');
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [suggestions, setSuggestions] = useState<any[]>([]);
   const router = useRouter();
-  const TOMTOM_API_KEY = process.env.TOMTOM_API_KEY
-  // const TOMTOM_API_KEY = '3VgEugYT6LBgBKn9WvyprAxlYlqaZeGA';
+  const TOMTOM_API_KEY = process.env.TOMTOM_API_KEY;
 
-  console.log("key is:",TOMTOM_API_KEY)
   useEffect(() => {
     navigation.setOptions({
       headerShown: true,
@@ -29,7 +27,6 @@ const SearchPlace = (props: Props) => {
     setQuery(text);
     if (text.length > 0) {
       try {
-        // Call TomTom API to get suggestions
         const response = await axios.get(
           `https://api.tomtom.com/search/2/search/${text}.json`,
           {
@@ -41,10 +38,21 @@ const SearchPlace = (props: Props) => {
             },
           }
         );
-        console.log(response)
-        // Map the response to get suggestion labels
-        const places = response.data.results.map((result: any) => result.address.freeformAddress);
+        const getMapImageUrl = (lat: number, lon: number) => {
+          return `https://api.tomtom.com/map/1/staticimage?key=${TOMTOM_API_KEY}&center=${lon},${lat}&zoom=12&format=png&layer=basic&style=main&width=500&height=300`;
+        };
+        console.log(response.data.results[0]);
+        const places = response.data.results.map((result: any) => ({
+
+          name: result.poi?.name || result.address?.freeformAddress,
+          coordinates: result.position,
+          photoRef: result.poi?.categorySet?.[0]?.id, // Update based on API's response if photo reference exists
+          url: getMapImageUrl(result.position.lat, result.position.lon) // Assuming URL might be part of the POI data or freeform address for fallback
+        }));
+
+        
         setSuggestions(places);
+        console.log(places);
       } catch (error) {
         console.error("Error fetching suggestions:", error);
       }
@@ -76,13 +84,20 @@ const SearchPlace = (props: Props) => {
       />
       <FlatList
         data={suggestions}
-        keyExtractor={(item) => item}
+        keyExtractor={(item) => item.name}
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => {
-              console.log(item);
-              setQuery(item);
+              setQuery(item.name);
               setSuggestions([]);
+              setTripData({
+                locationInfo: {
+                  name: item.name,
+                  coordinates: item.coordinates,
+                  photoRef: item.photoRef,
+                  url: item.url,
+                },
+              });
               router.push("/create-trip/select-traveller");
             }}
             style={{
@@ -91,7 +106,7 @@ const SearchPlace = (props: Props) => {
               borderBottomColor: Colors.GRAY,
             }}
           >
-            <Text>{item}</Text>
+            <Text>{item.name}</Text>
           </TouchableOpacity>
         )}
       />
