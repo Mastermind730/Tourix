@@ -1,6 +1,6 @@
 import { View, Text, FlatList, Pressable } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigation } from "expo-router";
+import { Link, useNavigation } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import { SelectTravellersList } from "@/constants/Options";
 import { CreateTripContext } from "@/context/CreateTripContext";
@@ -27,7 +27,7 @@ const SelectTraveller = (props: Props) => {
     <View
       style={{
         padding: 25,
-        paddingTop: 75,
+        paddingTop: 65,
         backgroundColor: Colors.WHITE,
         height: "100%",
       }}
@@ -36,7 +36,7 @@ const SelectTraveller = (props: Props) => {
         style={{
           fontSize: 35,
           fontFamily: "outfit-bold",
-          marginTop: 20,
+          marginTop: 15,
         }}
       >
         Who's Travelling
@@ -91,6 +91,8 @@ const SelectTraveller = (props: Props) => {
           marginTop: 15,
         }}
       >
+              <Link href={"/create-trip/select-dates"} style={{width:"100%",textAlign:"center"}}>
+
         <Text
           style={{
             textAlign: "center",
@@ -101,6 +103,8 @@ const SelectTraveller = (props: Props) => {
         >
           Continue
         </Text>
+        </Link>
+
       </Pressable>
     </View>
   );
