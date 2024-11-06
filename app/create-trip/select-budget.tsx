@@ -43,7 +43,7 @@ const SelectBudget = (props: Props) => {
       }
     } else {
       
-      router.push("/create-trip/select-budget");
+      router.push("/create-trip/reviewTrip");
     }
   };
 
