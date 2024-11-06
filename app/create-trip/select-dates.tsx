@@ -7,7 +7,7 @@ import {
   ToastAndroid,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useNavigation } from "expo-router";
+import { Link, useNavigation, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import CalendarPicker from "react-native-calendar-picker";
 import moment from "moment";
@@ -20,7 +20,7 @@ const SelectDates = (props: Props) => {
   const [selectedStartDate, setSelectedStartDate] = useState<any>();
   const [selectedEndDate, setSelectedEndDate] = useState<any>();
   const { tripData, setTripData } = useContext(CreateTripContext);
-
+  const router=useRouter();
   useEffect(() => {
     navigation.setOptions({
       headerShown: true,
@@ -46,6 +46,7 @@ const SelectDates = (props: Props) => {
         endDate: selectedEndDate,
         totalNoOfDays: totalNoOfDays + 1,
       });
+      router.push("/create-trip/select-budget");
     }
   };
   const onDateChange = (date: any, type: any) => {
